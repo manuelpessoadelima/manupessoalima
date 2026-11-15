@@ -1,0 +1,41 @@
+name: Update journal from Notion
+
+on:
+  workflow_dispatch:        # adds a "Run workflow" button in the Actions tab
+  schedule:
+    - cron: "17 * * * *"    # every hour, at minute 17
+
+permissions:
+  contents: write           # lets the workflow commit the updated index.html
+
+concurrency:
+  group: update-journal
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Pull newest entry from Notion
+        run: node scripts/update-journal.mjs
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE_ID: 419721750a4880fab1cec4a7e784d4ca
+          TIMEZONE: Europe/Berlin
+
+      - name: Commit if the entry changed
+        run: |
+          if git diff --quiet; then
+            echo "Nothing new."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Update journal entry from Notion"
+          git push

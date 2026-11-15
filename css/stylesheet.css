@@ -39,6 +39,7 @@ GENERAL SETUP
   --text-xs: 0.75rem;                            /* 12px: labels, captions */
   --text-sm: 0.875rem;                           /* 14px: nav, metadata */
   --text-md: 1rem;                               /* 16px: body text */
+  --text-entry: 1.25rem;                         /* 20px: journal entry */
   --text-lg: clamp(1.75rem, 1.3rem + 1.4vw, 2rem); /* 28–32px: intro, bio */
   --text-xl: clamp(2rem, 1.25rem + 3vw, 3.5rem); /* 32–56px: name, titles */
 
@@ -63,6 +64,16 @@ img {
 
 h1, h2, h3, p, ul {
   margin: 0;        /* you set spacing yourself, instead of browser defaults */
+}
+
+/* hides text visually but keeps it for screen readers */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 
@@ -119,6 +130,21 @@ hgroup {
   gap: var(--space-xs);                          /* between degrees */
 }
 
+main {
+  padding: var(--space-xl) var(--space-md);      /* same side margins as the header */
+}
+
+.journal-entry {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);                          /* date ↔ entry */
+  max-width: 34rem;                              /* a narrow, letter-like column */
+}
+
+.journal-entry footer {
+  margin-top: var(--space-md);
+}
+
 
 /*===========================
 MOBILE TYPOGRAPHY
@@ -154,6 +180,29 @@ h1 {
   font-size: var(--text-sm);
   line-height: 1.4;
   letter-spacing: 0;                             /* small text needs normal spacing */
+}
+
+.journal-entry time {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  letter-spacing: 0.02em;
+  opacity: 0.6;                                  /* a quiet timestamp */
+}
+
+.journal-entry p {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: var(--text-entry);
+  line-height: 1.5;                              /* smaller text needs looser lines than the bio */
+  text-wrap: pretty;
+}
+
+.journal-archive-link {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: inherit;
 }
 
 
@@ -212,6 +261,10 @@ DESKTOP
   header {
     gap: var(--space-xl);
     padding: var(--space-xl);                    /* more breathing room around the edges */
+  }
+
+  main {
+    padding: var(--space-xl);                    /* lines up with the header */
   }
 
   .bio-container {
